@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class HrEmployee(models.Model):
@@ -16,15 +16,15 @@ class HrEmployee(models.Model):
 
     def _regenerate_calendar(self):
         self.ensure_one()
-        if not self.calendar_id or self.calendar_id.active:
-            self.calendar_id = self.env['resource.calendar'].create({
+        if not self.resource_calendar_id or self.resource_calendar_id.active:
+            self.resource_calendar_id = self.env['resource.calendar'].create({
                 'active': False,
                 'name': _(
                     'Auto generated calendar for employee'
                 ) + ' %s' % self.id,
             }).id
         else:
-            self.calendar_id.attendance_ids.unlink()
+            self.resource_calendar_id.attendance_ids.unlink()
         vals_list = []
         for line in self.calendar_ids:
             for calendar_line in line.calendar_id.attendance_ids:
@@ -36,7 +36,7 @@ class HrEmployee(models.Model):
                     'date_from': line.date_start,
                     'date_to': line.date_end,
                 }))
-        self.calendar_id.attendance_ids = vals_list
+        self.resource_calendar_id.attendance_ids = vals_list
 
 
 class HrEmployeeCalendar(models.Model):
@@ -57,6 +57,7 @@ class HrEmployeeCalendar(models.Model):
         comodel_name="resource.calendar",
         string="Working Time",
         required=True,
+
     )
 
     _sql_constraints = [
@@ -75,3 +76,41 @@ class HrEmployeeCalendar(models.Model):
         for employee in self.mapped('employee_id'):
             employee._regenerate_calendar()
         return res
+
+    @api.constrains('employee_id', 'date_start', 'date_end')
+    def _constrain_overlap(self):
+        for record in self:
+            domain = [
+                ('employee_id', '=', record.employee_id.id),
+                ('id', '!=', record.id),
+            ]
+            if record.date_end and record.date_start:
+                domain += [
+                    '|', '|', '|', '|', '|',
+                    '&', ('date_start', '<=', record.date_start),
+                    ('date_end', '>=', record.date_start),
+                    '&', ('date_start', '<=', record.date_start),
+                    ('date_end', '=', False),
+                    '&', ('date_start', '<=', record.date_end),
+                    ('date_end', '>=', record.date_end),
+                    '&', ('date_start', '=', False),
+                    ('date_end', '>=', record.date_end),
+                    '&', ('date_start', '<=', record.date_end),
+                    ('date_end', '=', False),
+                    '&', ('date_start', '=', False),
+                    ('date_end', '=', False),
+                ]
+            elif record.date_end:
+                domain += [
+                    '|', ('date_start', '=', False),
+                    ('date_start', '<=', record.date_end)
+                ]
+            elif record.date_start:
+                domain += [
+                    '|', ('date_end', '=', False),
+                    ('date_end', '>=', record.date_start)
+                ]
+            if self.search(domain, limit=1):
+                    raise ValidationError(
+                        _('There cannot exist any overlaps in the '
+                          'calendar planning.'))

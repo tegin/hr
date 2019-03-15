@@ -4,9 +4,7 @@
 from odoo import fields, models
 
 
-class ResourceCalendar(models.Model):
-    _inherit = 'resource.calendar'
+class ResourceResource(models.Model):
+    _inherit = 'resource.resource'
 
-    active = fields.Boolean(
-        default=True,
-    )
+    calendar_id = fields.Many2one(required=False)
