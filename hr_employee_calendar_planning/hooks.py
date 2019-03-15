@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
@@ -14,7 +13,7 @@ def post_init_hook(cr, registry, employees=None):
         env = api.Environment(cr, SUPERUSER_ID, {})
         if not employees:
             employees = env['hr.employee'].search([])
-        calendars = employees.mapped('calendar_id')
+        calendars = employees.mapped('resource_calendar_id')
         calendar_obj = env['resource.calendar']
         line_obj = env['resource.calendar.attendance']
         groups = line_obj.read_group(
@@ -51,11 +50,11 @@ def post_init_hook(cr, registry, employees=None):
             )
         for employee in employees:
             calendar_lines = []
-            for data in calendar_mapping[employee.calendar_id]:
+            for data in calendar_mapping[employee.resource_calendar_id]:
                 calendar_lines.append((0, 0, {
                     'date_start': data[0],
                     'date_end': data[1],
-                    'calendar_id': data[2].id,
+                    'resource_calendar_id': data[2].id,
                 }))
-            employee.calendar_id = False
-            employee.calendar_ids = calendar_lines
+            # employee.resource_calendar_id = False
+            # employee.calendar_ids = calendar_lines
