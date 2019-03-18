@@ -12,6 +12,7 @@ class HrEmployee(models.Model):
         inverse_name="employee_id",
         string="Calendar planning",
     )
+    resource_id = fields.Many2one(required=False)
 
     def _regenerate_calendar(self):
         self.ensure_one()
@@ -56,6 +57,7 @@ class HrEmployeeCalendar(models.Model):
         comodel_name="resource.calendar",
         string="Working Time",
         required=True,
+
     )
 
     _sql_constraints = [
