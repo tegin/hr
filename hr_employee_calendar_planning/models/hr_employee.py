@@ -1,7 +1,8 @@
 # Copyright 2019 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class HrEmployee(models.Model):
@@ -12,7 +13,6 @@ class HrEmployee(models.Model):
         inverse_name="employee_id",
         string="Calendar planning",
     )
-    resource_id = fields.Many2one(required=False)
 
     def _regenerate_calendar(self):
         self.ensure_one()
@@ -27,7 +27,7 @@ class HrEmployee(models.Model):
             self.resource_calendar_id.attendance_ids.unlink()
         vals_list = []
         for line in self.calendar_ids:
-            for calendar_line in line.resource_calendar_id.attendance_ids:
+            for calendar_line in line.calendar_id.attendance_ids:
                 vals_list.append((0, 0, {
                     'name': calendar_line.name,
                     'dayofweek': calendar_line.dayofweek,
@@ -76,3 +76,41 @@ class HrEmployeeCalendar(models.Model):
         for employee in self.mapped('employee_id'):
             employee._regenerate_calendar()
         return res
+
+    @api.constrains('employee_id', 'date_start', 'date_end')
+    def _constrain_overlap(self):
+        for record in self:
+            domain = [
+                ('employee_id', '=', record.employee_id.id),
+                ('id', '!=', record.id),
+            ]
+            if record.date_end and record.date_start:
+                domain += [
+                    '|', '|', '|', '|', '|',
+                    '&', ('date_start', '<=', record.date_start),
+                    ('date_end', '>=', record.date_start),
+                    '&', ('date_start', '<=', record.date_start),
+                    ('date_end', '=', False),
+                    '&', ('date_start', '<=', record.date_end),
+                    ('date_end', '>=', record.date_end),
+                    '&', ('date_start', '=', False),
+                    ('date_end', '>=', record.date_end),
+                    '&', ('date_start', '<=', record.date_end),
+                    ('date_end', '=', False),
+                    '&', ('date_start', '=', False),
+                    ('date_end', '=', False),
+                ]
+            elif record.date_end:
+                domain += [
+                    '|', ('date_start', '=', False),
+                    ('date_start', '<=', record.date_end)
+                ]
+            elif record.date_start:
+                domain += [
+                    '|', ('date_end', '=', False),
+                    ('date_end', '>=', record.date_start)
+                ]
+            if self.search(domain, limit=1):
+                    raise ValidationError(
+                        _('There cannot exist any overlaps in the '
+                          'calendar planning.'))

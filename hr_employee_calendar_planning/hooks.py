@@ -54,7 +54,7 @@ def post_init_hook(cr, registry, employees=None):
                 calendar_lines.append((0, 0, {
                     'date_start': data[0],
                     'date_end': data[1],
-                    'resource_calendar_id': data[2].id,
+                    'calendar_id': data[2].id,
                 }))
-            employee.resource_id = False
+            employee.resource_calendar_id = False
             employee.calendar_ids = calendar_lines

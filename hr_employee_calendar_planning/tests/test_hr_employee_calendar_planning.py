@@ -70,7 +70,7 @@ class TestHrEmployeeCalendarPlanning(common.SavepointCase):
             lambda x: x.date_to == '2019-12-30'
         )), 10)
 
-    def _test_post_install_hook(self):
+    def test_post_install_hook(self):
         self.employee.resource_calendar_id = self.calendar1.id
         post_init_hook(self.env.cr, self.env.registry, self.employee)
         self.assertNotEqual(self.employee.resource_calendar_id, self.calendar1)
@@ -80,7 +80,7 @@ class TestHrEmployeeCalendarPlanning(common.SavepointCase):
         self.assertFalse(self.employee.resource_calendar_ids.date_start)
         self.assertFalse(self.employee.resource_calendar_ids.date_end)
 
-    def _test_post_install_hook_several_calendaries(self):
+    def test_post_install_hook_several_calendaries(self):
         self.calendar1.attendance_ids[0].date_from = '2019-01-01'
         self.calendar1.attendance_ids[1].date_from = '2019-01-01'
         self.employee.resource_calendar_id = self.calendar1.id
