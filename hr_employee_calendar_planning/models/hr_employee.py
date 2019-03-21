@@ -27,15 +27,13 @@ class HrEmployee(models.Model):
             self.resource_calendar_id.attendance_ids.unlink()
         vals_list = []
         for line in self.calendar_ids:
-            for calendar_line in line.calendar_id.attendance_ids:
-                vals_list.append((0, 0, {
-                    'name': calendar_line.name,
-                    'dayofweek': calendar_line.dayofweek,
-                    'hour_from': calendar_line.hour_from,
-                    'hour_to': calendar_line.hour_to,
+            for attendance_line in line.calendar_id.attendance_ids:
+                data = attendance_line.copy_data({
+                    'calendar_id': self.resource_calendar_id.id,
                     'date_from': line.date_start,
                     'date_to': line.date_end,
-                }))
+                })[0]
+                vals_list.append((0, 0, data))
         self.resource_calendar_id.attendance_ids = vals_list
 
 
@@ -110,8 +108,7 @@ class HrEmployeeCalendar(models.Model):
                     '|', ('date_end', '=', False),
                     ('date_end', '>=', record.date_start)
                 ]
-            overlapping_calendar = self.search(domain, limit=1)
-            if overlapping_calendar:
-                    raise ValidationError(
-                        _('There cannot exist any overlaps in the '
-                          'calendar planning.'))
+            if self.search(domain, limit=1):
+                raise ValidationError(
+                    _('There cannot exist any overlaps in the '
+                      'calendar planning.'))

@@ -12,14 +12,16 @@ def post_init_hook(cr, registry, employees=None):
     with api.Environment.manage():
         env = api.Environment(cr, SUPERUSER_ID, {})
         if not employees:
-            employees = env['hr.employee'].search([(
-                'resource_calendar_id', '!=', False,
-            )])
+            employees = env['hr.employee'].search([
+                ('resource_calendar_id', '!=', False),
+            ])
         for employee in employees:
             calendar_lines = [(0, 0, {
                 'date_start': False,
                 'date_end': False,
                 'calendar_id': employee.resource_calendar_id.id,
             })]
-            employee.resource_calendar_id = False
-            employee.calendar_ids = calendar_lines
+            employee.write({
+                'resource_calendar_id': False,
+                'calendar_ids': calendar_lines,
+            })
