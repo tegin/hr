@@ -110,7 +110,8 @@ class HrEmployeeCalendar(models.Model):
                     '|', ('date_end', '=', False),
                     ('date_end', '>=', record.date_start)
                 ]
-            if self.search(domain, limit=1):
+            overlapping_calendar = self.search(domain, limit=1)
+            if overlapping_calendar:
                     raise ValidationError(
                         _('There cannot exist any overlaps in the '
                           'calendar planning.'))
