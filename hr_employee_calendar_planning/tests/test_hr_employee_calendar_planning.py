@@ -73,28 +73,11 @@ class TestHrEmployeeCalendarPlanning(common.SavepointCase):
             lambda x: x.date_to == '2019-12-30'
         )), 10)
 
-    def test_calendar_planning_overlap(self):
-        self.employee.calendar_ids = [
-            (0, 0, {
-                'date_start': '2019-12-01',
-                'date_end': '2019-12-31',
-                'calendar_id': self.calendar1.id,
-            }),
-        ]
-        # Case 1. overlap between date start of the new record with date end
-        # of the existing record.
-        with self.assertRaises(ValidationError):
-            self.employee.calendar_ids += self.env[
-                'hr.employee.calendar'].new({
-                    'date_start': '2019-12-31',
-                    'date_end': '2020-01-01',
-                    'calendar_id': self.calendar2.id
-                    })
-
     def test_post_install_hook(self):
         self.employee.resource_calendar_id = self.calendar1.id
         post_init_hook(self.env.cr, self.env.registry, self.employee)
-        self.assertNotEqual(self.employee.resource_calendar_id, self.calendar1)
+        self.assertNotEqual(self.employee.resource_calendar_id,
+                            self.calendar1)
         # Check that no change is done on original calendar
         self.assertEqual(len(self.calendar1.attendance_ids), 10)
         self.assertEqual(len(self.employee.calendar_ids), 1)
@@ -106,8 +89,13 @@ class TestHrEmployeeCalendarPlanning(common.SavepointCase):
         self.calendar1.attendance_ids[1].date_from = '2019-01-01'
         self.employee.resource_calendar_id = self.calendar1.id
         post_init_hook(self.env.cr, self.env.registry, self.employee)
-        self.assertNotEqual(self.employee.resource_calendar_id,
-                            self.calendar1)
-        self.assertEqual(len(self.employee.calendar_ids), 1)
-        self.assertEqual(self.employee.calendar_ids.calendar_id,
-                         self.calendar1)
+        self.assertNotEqual(self.employee.resource_calendar_id, self.calendar1)
+        # Check that no change is done on original calendar
+        self.assertEqual(len(self.calendar1.attendance_ids), 10)
+        self.assertEqual(len(self.employee.calendar_ids), 2)
+        self.assertEqual(
+            len(self.employee.calendar_ids[0].calendar_id.attendance_ids), 2,
+        )
+        self.assertEqual(
+            len(self.employee.calendar_ids[1].calendar_id.attendance_ids), 8,
+        )
