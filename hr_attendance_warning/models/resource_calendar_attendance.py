@@ -94,7 +94,6 @@ class ResourceCalendarAttendance(models.Model):
 
     def _check_issue_start(self, date):
         date_t = fields.Datetime.from_string(date)
-
         day_date = fields.Date.from_string(date)
         self.ensure_one()
         # If it's a different day there cannot be a warning.
@@ -110,9 +109,9 @@ class ResourceCalendarAttendance(models.Model):
                 start_time=float_to_time(self.hour_from),
                 end_time=float_to_time(self.hour_to),
                 compute_leaves=True,
-                resource_id=employee.id
+                resource_id=employee.resource_id.id
             )
-            if len(intervals) != 0:
+            if any(self in i.data['attendances'] for i in intervals):
                 utz = self.env.user.tz
                 min_check_in = date_t + timedelta(hours=self.hour_from,
                                                   minutes=-self.margin_from)
@@ -157,9 +156,9 @@ class ResourceCalendarAttendance(models.Model):
                 start_time=float_to_time(self.hour_from),
                 end_time=float_to_time(self.hour_to),
                 compute_leaves=True,
-                resource_id=employee.id
+                resource_id=employee.resource_id.id
             )
-            if len(intervals) != 0:
+            if any(self in i.data['attendances'] for i in intervals):
                 utz = self.env.user.tz
                 min_check_out = date_t + timedelta(hours=self.hour_to,
                                                    minutes=-self.margin_to)

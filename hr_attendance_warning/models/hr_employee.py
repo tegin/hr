@@ -5,6 +5,8 @@ from odoo import api, fields, models
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    mute_warnings = fields.Boolean(string='Mute Warnings')
+
     def get_warning_domain(self, date):
         today = fields.Datetime.from_string(date)
         tomorrow = today + timedelta(days=1)
@@ -15,7 +17,7 @@ class HrEmployee(models.Model):
                 ('employee_id', '=', self.id)]
 
     def _create_warning(self, w_type, date, min_int=False, max_int=False):
-        if not self.active:
+        if not self.active or self.mute_warnings:
             return
         warning_obj = self.env['hr.attendance.warning']
         warning = warning_obj.search(self.get_warning_domain(date), limit=1)
@@ -32,6 +34,7 @@ class HrEmployee(models.Model):
             self.env['hr.attendance.warning'].create(self._create_warning_vals(
                 w_type, min_int, max_int
             ))
+        warning_obj.update_counter()
 
     def _create_warning_vals(self, w_type, min_int=False, max_int=False):
         return {
@@ -61,7 +64,7 @@ class HrEmployee(models.Model):
                     start_time=False,
                     end_time=False,
                     compute_leaves=True,
-                    resource_id=self.id
+                    resource_id=self.resource_id.id
                 )])
             if not in_interval:
                 date = fields.Date.to_string(action_time.date())
