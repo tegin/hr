@@ -50,6 +50,21 @@ class HrAttendanceWarning(models.Model):
         string='Created on',
         compute='_compute_day_date', readonly=True)
 
+    @api.model
+    def pending_warnings_count(self):
+        warnings = {}
+        for warning in self.search([('state', '=', 'pending')]):
+            warnings[warning.id] = {
+                'name': warning.name,
+                'employee': warning.employee_id.name,
+                'employee_id': warning.employee_id.id,
+                'icon': warning.employee_id.image,
+                'date': warning.day_date,
+                'id': warning.id
+            }
+        return list(warnings.values())
+
+
     @api.depends('create_date')
     def _compute_day_date(self):
         for record in self:
