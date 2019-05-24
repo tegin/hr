@@ -19,10 +19,16 @@
     ],
     'data': [
         'data/ir_sequence_data.xml',
+        'data/ir_config_parameter_data.xml',
         'data/check_issues_cron.xml',
+        'security/hr_warnings_security.xml',
         'security/ir.model.access.csv',
+        'views/assets_backend.xml',
         'views/hr_attendance_warning.xml',
         'views/resource_calendar_attendance.xml',
         'wizards/hr_attendance_warning_solve.xml',
+    ],
+    'qweb': [
+        'static/src/xml/systray.xml',
     ],
 }

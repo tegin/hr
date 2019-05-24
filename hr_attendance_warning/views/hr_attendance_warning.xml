@@ -50,6 +50,7 @@
                             <field name="warning_line_ids">
                                 <tree string="Warnings" create="false" delete="false" decoration-muted="state == 'solved'">
                                     <field name="message"/>
+                                    <field name="create_date"/>
                                     <field name="state" invisible="1"/>
                                 </tree>
                             </field>
@@ -141,7 +142,7 @@
             id="menu_view_course_category_form"
             action="open_view_hr_attendance_warning"
             parent="hr_attendance.menu_hr_attendance_root"
-            groups="hr_attendance.group_hr_attendance_manager"
+            groups="hr_attendance.group_hr_attendance_user"
             sequence="50"/>
 
 </odoo>
