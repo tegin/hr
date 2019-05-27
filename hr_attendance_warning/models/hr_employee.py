@@ -29,7 +29,6 @@ class HrEmployee(models.Model):
                     'max_int': max_int,
                 })]
             })
-            warning.notify_warning(message)
         else:
             self.env['hr.attendance.warning'].create(self._create_warning_vals(
                 w_type, min_int, max_int

@@ -17,6 +17,7 @@ odoo.define('hr_attendance_warning.systray', function (require) {
         events: {
             "click": "_onMenuClick",
             "click .o_mail_channel_preview": "_onWarningClick",
+            "click .o_view_all_warnings": "_viewAllWarnings",
         },
         start: function () {
             this.$warnings_preview = this.$('.o_mail_navbar_dropdown_channels');
@@ -43,8 +44,6 @@ odoo.define('hr_attendance_warning.systray', function (require) {
                 for (var i = 0; i < self.warnings.length; ++i) {
                     self.warnings[i]['date_ago'] = moment(time.str_to_datetime(self.warnings[i]['date'])).fromNow();
                 }
-                // channel.last_message_date = moment(time.str_to_datetime(data.last_message_date));
-                // self.warningsCounter = _.reduce(data, function(total_count, p_data){ return total_count + p_data.pending_count; }, 0);
                 self.warningsCounter = data.length;
                 self.$('.o_notification_counter').text(self.warningsCounter);
                 self.$el.toggleClass('o_no_notification', !self.warningsCounter);
@@ -73,6 +72,16 @@ odoo.define('hr_attendance_warning.systray', function (require) {
                 res_model: 'hr.attendance.warning',
                 views: [[false, 'form']],
                 res_id: warning_id
+            });
+        },
+
+        _viewAllWarnings: function (event){
+            this.do_action({
+                type: 'ir.actions.act_window',
+                name: 'Attendance Warnings',
+                res_model: 'hr.attendance.warning',
+                context: "{'search_default_pending': 1, }",
+                views: [[false, 'list']],
             });
         },
 
