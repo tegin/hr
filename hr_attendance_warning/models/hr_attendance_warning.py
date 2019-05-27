@@ -1,7 +1,7 @@
 # Copyright 2019 Creu Blanca
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, modules, _
 
 
 class HrAttendanceWarning(models.Model):
@@ -43,7 +43,6 @@ class HrAttendanceWarning(models.Model):
     warning_line_ids = fields.One2many(
         'hr.attendance.warning.line',
         inverse_name='warning_id',
-        readonly=False,
     )
 
     day_date = fields.Date(
@@ -58,12 +57,29 @@ class HrAttendanceWarning(models.Model):
                 'name': warning.name,
                 'employee': warning.employee_id.name,
                 'employee_id': warning.employee_id.id,
-                'icon': warning.employee_id.image,
-                'date': warning.day_date,
+                'icon': modules.module.get_module_icon('hr_attendance'),
+                'date': warning.create_date,
+                'count': len(warning.warning_line_ids),
                 'id': warning.id
             }
-        return list(warnings.values())
+        return sorted(list(warnings.values()), key=lambda w: w['date'], reverse=True)
 
+    def notify_warning(self, message):
+        if hasattr(self, 'message_post'):
+            # Notify state change
+            getattr(self, 'message_post')(
+                subtype='mt_comment',
+                body=message
+            )
+
+    @api.model
+    def update_counter(self):
+        import logging
+        logging.info('update')
+        notifications = []
+        channel = 'hr.attendance.warning'
+        notifications.append([channel, {}])
+        self.env['bus.bus'].sendmany(notifications)
 
     @api.depends('create_date')
     def _compute_day_date(self):
@@ -80,7 +96,10 @@ class HrAttendanceWarning(models.Model):
     def create(self, vals):
         if vals.get('name', '/') == '/':
             vals.update({'name': self.get_name(vals)})
-        return super(HrAttendanceWarning, self).create(vals)
+        res = super(HrAttendanceWarning, self).create(vals)
+        res.notify_warning(_('New Warning Created'))
+        self.update_counter()
+        return res
 
     def _pending2solved_values(self):
         return {
@@ -91,10 +110,13 @@ class HrAttendanceWarning(models.Model):
 
     @api.multi
     def pending2solved(self):
+        message = _('Warnings Solved')
         for record in self:
             record.write(record._pending2solved_values())
             for line in record.warning_line_ids:
                 line.write({'state': 'solved'})
+            record.notify_warning(message)
+        self.update_counter()
 
     def _solved2pending_values(self):
         return {
@@ -105,10 +127,13 @@ class HrAttendanceWarning(models.Model):
 
     @api.multi
     def solved2pending(self):
+        message = _('Warnings set back to pending')
         for record in self:
             record.write(record._solved2pending_values())
             for line in record.warning_line_ids:
                 line.write({'state': 'pending'})
+            record.notify_warning(message)
+        self.update_counter()
 
     @api.multi
     def open_employee_attendances(self):

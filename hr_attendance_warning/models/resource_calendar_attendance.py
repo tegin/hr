@@ -94,7 +94,6 @@ class ResourceCalendarAttendance(models.Model):
 
     def _check_issue_start(self, date):
         date_t = fields.Datetime.from_string(date)
-
         day_date = fields.Date.from_string(date)
         self.ensure_one()
         # If it's a different day there cannot be a warning.

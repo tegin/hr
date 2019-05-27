@@ -6,6 +6,9 @@ odoo.define('hr_attendance_warning.systray', function (require) {
     var session = require('web.session');
     var SystrayMenu = require('web.SystrayMenu');
     var Widget = require('web.Widget');
+    var time = require('web.time');
+    var bus = require('bus.bus').bus;
+    var chat_manager = require('mail.chat_manager');
 
     var QWeb = core.qweb;
 
@@ -18,6 +21,9 @@ odoo.define('hr_attendance_warning.systray', function (require) {
         start: function () {
             this.$warnings_preview = this.$('.o_mail_navbar_dropdown_channels');
             this._updateWarningsPreview();
+            var channel = 'hr.attendance.warning';
+            bus.add_channel(channel);
+            bus.on('notification', this, this._updateWarningsPreview);
             return this._super();
         },
 
@@ -34,6 +40,10 @@ odoo.define('hr_attendance_warning.systray', function (require) {
                 },
             }).then(function (data) {
                 self.warnings = data;
+                for (var i = 0; i < self.warnings.length; ++i) {
+                    self.warnings[i]['date_ago'] = moment(time.str_to_datetime(self.warnings[i]['date'])).fromNow();
+                }
+                // channel.last_message_date = moment(time.str_to_datetime(data.last_message_date));
                 // self.warningsCounter = _.reduce(data, function(total_count, p_data){ return total_count + p_data.pending_count; }, 0);
                 self.warningsCounter = data.length;
                 self.$('.o_notification_counter').text(self.warningsCounter);

@@ -1,5 +1,5 @@
 from datetime import timedelta
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class HrEmployee(models.Model):
@@ -19,6 +19,7 @@ class HrEmployee(models.Model):
             return
         warning_obj = self.env['hr.attendance.warning']
         warning = warning_obj.search(self.get_warning_domain(date), limit=1)
+        message = _('New Attendance Warning Created')
         if warning:
             warning.write({
                 'state': 'pending',
@@ -28,10 +29,12 @@ class HrEmployee(models.Model):
                     'max_int': max_int,
                 })]
             })
+            warning.notify_warning(message)
         else:
             self.env['hr.attendance.warning'].create(self._create_warning_vals(
                 w_type, min_int, max_int
             ))
+        warning_obj.update_counter()
 
     def _create_warning_vals(self, w_type, min_int=False, max_int=False):
         return {
