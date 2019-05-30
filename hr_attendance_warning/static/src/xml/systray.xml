@@ -2,7 +2,7 @@
 <templates>
 
     <t t-name="att_warning.view.Menu">
-        <li class="o_mail_navbar_item o_warning_navbar_item">
+        <li class="o_mail_navbar_item o_warning_navbar_item o_hidden">
             <a class="dropdown-toggle" data-toggle="dropdown"
                aria-expanded="false" title="Attendance Warnings" href="#">
                 <i class="fa fa-user-times"/>

@@ -19,12 +19,27 @@ odoo.define('hr_attendance_warning.systray', function (require) {
             "click .o_mail_channel_preview": "_onWarningClick",
             "click .o_view_all_warnings": "_viewAllWarnings",
         },
+        renderElement: function() {
+            this._super();
+            var self = this;
+            session.user_has_group('hr.group_hr_manager').then(function (data) {
+                if (data) {
+                    self.do_show();
+                }
+            })
+        },
         start: function () {
-            this.$warnings_preview = this.$('.o_mail_navbar_dropdown_channels');
-            this._updateWarningsPreview();
-            var channel = 'hr.attendance.warning';
-            bus.add_channel(channel);
-            bus.on('notification', this, this._updateWarningsPreview);
+            var self = this;
+            session.user_has_group('hr.group_hr_manager').then(function (data) {
+                self.manager = data
+                if (data) {
+                    self.$warnings_preview = self.$('.o_mail_navbar_dropdown_channels');
+                    self._updateWarningsPreview();
+                    var channel = 'hr.attendance.warning';
+                    bus.add_channel(channel);
+                    bus.on('notification', self, self._updateWarningsPreview);
+                };
+            });
             return this._super();
         },
 
