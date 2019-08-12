@@ -157,6 +157,38 @@ class HrHolidaysPublicLine(models.Model):
         'Related States'
     )
 
+    resource_calendar_leave_id = fields.Many2one('resource.calendar.leaves')
+
+    @api.model
+    def create(self, values):
+        res = super().create(values)
+        res.resource_calendar_leave_id = self.env[
+            'resource.calendar.leaves'
+        ].create({
+            'name': res.name,
+            'date_from': res.date,
+            'date_to': res.date,
+            'resource_id': False,
+            'calendar_id': False,
+            'time_type': 'leave',
+        })
+        return res
+
+    @api.multi
+    def write(self, vals):
+        v = {}
+        if 'name' in vals:
+            v.update({'name': vals.get('name')})
+        if 'date' in vals:
+            leave_date = vals.get('date')
+            v.update({'date_from': leave_date, 'date_to': leave_date})
+        self.resource_calendar_leave_id.write(v)
+
+    @api.multi
+    def unlink(self):
+        self.mapped('resource_calendar_leave_id').unlink()
+        return super().unlink()
+
     @api.multi
     @api.constrains('date', 'state_ids')
     def _check_date_state(self):

@@ -41,7 +41,7 @@ class ResourceCalendar(models.Model):
                             line.date,
                             time.max
                         ).replace(tzinfo=tz),
-                        line
+                        line.resource_calendar_leave_id
                     ),
                 )
         return Intervals(leaves)
