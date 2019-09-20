@@ -241,19 +241,23 @@ class TestHrAttendanceWarning(common.TransactionCase):
                 [('employee_id', '=', self.employee.id)], limit=1)
             self.assertFalse(warning_in)
 
-    def test_no_check_in_public_holidays(self):
+    def test_public_holidays(self):
         self.env['hr.holidays.public'].create({
             'year': 2018,
-            'line_ids': [(0, 0, {'date': '2018-06-13', 'name': 'Name'})]
+            'line_ids': [(0, 0, {'date': '2018-06-15', 'name': 'Name'})]
         })
         with patch('odoo.fields.Datetime.now') as now,\
                 patch('odoo.fields.Date.today') as today:
-            now.return_value = '2018-06-15 21:00:00'
+            now.return_value = '2018-06-15 10:00:00'
             today.return_value = '2018-06-15'
-            self.employee.attendance_action_change()
+
+            self.env['resource.calendar.attendance'].cron_attendance_checks()
             self.env['resource.calendar.attendance'].cron_attendance_checks()
             warnings = self.env['hr.attendance.warning'].search(
                 [('employee_id', '=', self.employee.id)], limit=1)
-            import logging
-            logging.info(warnings.warning_type)
             self.assertFalse(warnings)
+
+            self.employee.attendance_action_change()
+            warnings = self.env['hr.attendance.warning'].search(
+                [('employee_id', '=', self.employee.id)], limit=1)
+            self.assertTrue(warnings)

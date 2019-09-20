@@ -144,6 +144,8 @@ class HrAttendanceWarning(models.Model):
             [('employee_id', '=', self.employee_id.id)])
         if len(attendances) > 1:
             result['domain'] = "[('id', 'in', %s)]" % attendances.ids
+        elif len(attendances) == 0:
+            result['domain'] = "[('id', 'in', [])]"
         else:
             result['views'] = [(False, 'form')]
             result['res_id'] = attendances.id

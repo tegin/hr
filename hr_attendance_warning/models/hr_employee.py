@@ -53,6 +53,7 @@ class HrEmployee(models.Model):
             action_time = fields.Datetime.from_string(
                 attendance.check_out or attendance.check_in
             )
+
             in_interval = any([
                 att[0] + timedelta(
                     minutes=-att.data['attendances'].margin_from or 0
@@ -66,7 +67,12 @@ class HrEmployee(models.Model):
                     compute_leaves=True,
                     resource_id=self.resource_id.id
                 )])
-            if not in_interval:
+
+            public_holiday = self.env['hr.holidays.public'].is_public_holiday(
+                action_time.date(), self.id
+            )
+
+            if not in_interval or public_holiday:
                 date = fields.Date.to_string(action_time.date())
                 self._create_warning(
                     date=date,
