@@ -12,11 +12,6 @@ class ResourceCalendar(models.Model):
 
     _inherit = 'resource.calendar'
 
-    def _get_work_hours(self, start, stop, meta):
-        return (stop - start - timedelta(hours=sum([
-            attendance.rest_time for attendance in meta
-        ]))).total_seconds() / 3600
-
     @api.onchange('attendance_ids')
     def _onchange_hours_per_day(self):
         if self.env.context.get('use_old_onchange_hours_per_day'):
