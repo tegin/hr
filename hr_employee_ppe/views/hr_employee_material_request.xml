@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 Creu Blanca
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="hr_employee_material_request_form_view">
+        <field name="name">hr.employee.material.request.form (in hr_employee_ppe)</field>
+        <field name="model">hr.employee.material.request</field>
+        <field name="inherit_id" ref="hr_employee_material.hr_employee_material_request_form_view"/>
+        <field name="arch" type="xml">
+             <xpath expr="//notebook//field[@name='employee_id']" position="after">
+                 <field name="is_ppe" invisible="1"/>
+                 <field name="description" invisible="1"/>
+                 <field name="certification" invisible="1"/>
+                 <field name="expire" invisible="1"/>
+                 <field name="description" invisible="1"/>
+                 <field name="indications" invisible="1"/>
+             </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>

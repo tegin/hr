@@ -2,6 +2,7 @@
 <!-- Copyright 2020 Escodoo
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
+    <!--
     <record id="product_category_ppe" model="product.category">
         <field name="parent_id" ref="product.product_category_all" />
         <field name="name">PPE</field>
@@ -47,4 +48,5 @@
         <field name="certification">CA 1234567891</field>
         <field name="description">Face Shield appropriate for COVID-19</field>
     </record>
+    -->
 </odoo>
