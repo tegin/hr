@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 Escodoo
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <record model="ir.ui.view" id="product_template_form_view">
+        <field name="name">product.template.form (in hr_employee_ppe)</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_employee_material']" position="after">
+                <field name="is_ppe" string="Is PPE" attrs="{'invisible': [('is_employee_material', '=', False)]}"/>
+                <field name="indications" string="PPE Indications" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
+                <field name="expirable" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
+                <field name="certification" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
+                <field name="description" string="PPE Description" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

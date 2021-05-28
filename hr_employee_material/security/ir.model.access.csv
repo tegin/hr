@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acl_hr_employee_material,hr_employee_material,model_hr_employee_material,hr_employee_material_group,1,1,1,1
+acl_hr_employee_material_request,hr_employee_material_request,model_hr_employee_material_request,hr_employee_material_group,1,1,1,1
+
