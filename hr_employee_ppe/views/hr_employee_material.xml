@@ -22,6 +22,14 @@
         <field name="model">hr.employee.material</field>
         <field name="inherit_id" ref="hr_employee_material.hr_employee_material_form_view"/>
         <field name="arch" type="xml">
+             <xpath expr="//button[@name='validate_allocation']" position="after">
+                <button
+                    type="object"
+                    name="action_view_ppe_report"
+                    string="Print Receipt of PPE"
+                    attrs="{'invisible':['|',('is_ppe','=',False), ('state', 'not in', ('accepted', 'valid'))]}"
+                    />
+            </xpath>
             <xpath expr="//field[@name='product_id']" position="after">
                 <field name="is_ppe" string="Is PPE" readonly="1" attrs="{'invisible':[('is_ppe', '=', False)]}"/>
             </xpath>
