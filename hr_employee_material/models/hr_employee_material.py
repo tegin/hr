@@ -12,7 +12,7 @@ class HrEmployeeMaterial(models.Model):
 
     name = fields.Char(compute='_compute_name')
     product_id = fields.Many2one(comodel_name='product.product', required=True,
-                                 domain=lambda self: [('is_employee_material', '=', '1')])
+                                 domain=[('is_employee_material', '=', '1')])
     employee_id = fields.Many2one(comodel_name='hr.employee')
     state = fields.Selection([("draft", "Draft"),
                               ("accepted", "Accepted"),
@@ -23,6 +23,14 @@ class HrEmployeeMaterial(models.Model):
     start_date = fields.Date()
     material_request_id = fields.Many2one(comodel_name="hr.employee.material.request")
     quantity = fields.Integer(default=1)
+    product_uom_id = fields.Many2one(
+        "uom.uom",
+        "Unit of Measure",
+        default=lambda self: self._default_uom_id()
+    )
+
+    def _default_uom_id(self):
+        return self.env.ref("uom.product_uom_unit")
 
     @api.depends('product_id', 'employee_id')
     def _compute_name(self):
@@ -38,4 +46,3 @@ class HrEmployeeMaterial(models.Model):
     def expire_allocation(self):
         for rec in self:
             rec.state = 'expired'
-

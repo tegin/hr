@@ -86,3 +86,8 @@ class HrEmployeeMaterial(models.Model):
                     raise ValidationError(
                         _("End date cannot occur earlier than the start date.")
                     )
+
+    def action_view_ppe_report(self):
+        report = self.env['ir.actions.report']._get_report_from_name(
+            'hr_employee_ppe.hr_employee_ppe_report_template')
+        return report.report_action(self)
