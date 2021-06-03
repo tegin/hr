@@ -27,7 +27,7 @@ class HrEmployeeMaterialRequest(models.Model):
     @api.onchange('procurement_group_id', 'line_ids')
     def onchange_procurement_group_id(self):
         for line in self.line_ids:
-            line.procurement_group_id = self.procurement_group_id
+            line.procurement_group_id = self.procurement_group_id.id
 
     def accept_request(self):
         for rec in self:

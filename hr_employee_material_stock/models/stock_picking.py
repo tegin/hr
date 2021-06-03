@@ -9,9 +9,14 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     material_request_id = fields.Many2one(related='group_id.material_request_id')
-    def button_validate(self):
-        super().button_validate()
-        for rec in self:
-            print(self.group_id)
-            print(self.group_id.material_request_id)
-            rec.material_request_id.state = 'valid'
+
+    def action_done(self):
+        super().action_done()
+        print(self.group_id)
+        print(self.group_id.material_request_id)
+        if self.material_request_id:
+            for move in self.move_ids_without_package:
+                if move.state == 'done':
+                    request_lines = self.material_request_id.line_ids.filtered(lambda x: x.product_id == move.product_id)
+                    for line in request_lines:
+                        line.state = 'valid'
