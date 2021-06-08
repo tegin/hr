@@ -8,29 +8,27 @@
         <field name="model">hr.employee.material</field>
         <field name="inherit_id" ref="hr_employee_material.hr_employee_material_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='employee_id']" position="after">
+            <button name="validate_allocation" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+            <field name="material_request_id" position='after'>
                  <field name="location_id"/>
-                 <field name="procurement_group_id"/>
-           </xpath>
-        </field>
-    </record>
-    >
-    <!--
-
-    <record model="ir.ui.view" id="hr_employee_material_search_view">
-        <field name="name">hr.employee.material.search (in hr_employee_material_stock)</field>
-        <field name="model">hr.employee.material</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
+                 <field name="procurement_group_id" invisible="1"/>
+            </field>
+            <xpath expr="//field[@name='quantity']" position="replace">
+                <field name="qty_delivered"/>
+            </xpath>
         </field>
     </record>
 
     <record model="ir.ui.view" id="hr_employee_material_tree_view">
         <field name="name">hr.employee.material.tree (in hr_employee_material_stock)</field>
         <field name="model">hr.employee.material</field>
-        <field name="inherit_id" ref=""/>
+        <field name="inherit_id" ref="hr_employee_material.hr_employee_material_tree_view"/>
         <field name="arch" type="xml">
+            <field name="quantity" position="replace">
+                <field name="qty_delivered"/>
+            </field>
         </field>
     </record>
--->
 </odoo>
