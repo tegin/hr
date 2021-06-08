@@ -15,7 +15,7 @@ class HrEmployeeMaterialRequest(models.Model):
         comodel_name="hr.employee", string="Employee", required=True, default=lambda self: self._default_employee_id()
     )
     line_ids = fields.One2many(string="Material", comodel_name="hr.employee.material",
-                               inverse_name="material_request_id")
+                               inverse_name="material_request_id", copy=True)
     state = fields.Selection([("draft", "Draft"),
                               ("accepted", "Accepted"),
                               ("cancelled", "Cancelled")],
@@ -31,21 +31,22 @@ class HrEmployeeMaterialRequest(models.Model):
 
     def accept_request(self):
         for rec in self:
-            rec.state = 'accepted'
-            rec.line_ids.update({'state': 'accepted'})
+            rec.write(rec._accept_request_vals())
+            rec.line_ids._accept_request()
+
+    def _accept_request_vals(self):
+        return {
+            "state": "accepted"
+        }
 
     def cancel_request(self):
         for rec in self:
             rec.state = 'cancelled'
             rec.line_ids.update({'state': 'cancelled'})
 
-    @api.onchange("employee_id", "line_ids")
+    @api.onchange("employee_id", "line_ids", "line_ids.employee_id")
     def _set_employee_material_fields(self):
         for rec in self:
-            if rec.line_ids:
-                for line in rec.line_ids:
-                    rec._set_employee_material_fields_values(line)
-
-    def _set_employee_material_fields_values(self, line):
-        line.employee_id = self.employee_id
+            for line in rec.line_ids:
+                line.employee_id = rec.employee_id
 

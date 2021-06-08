@@ -23,7 +23,7 @@ class HrEmployeeMaterial(models.Model):
     start_date = fields.Date()
     material_request_id = fields.Many2one(comodel_name="hr.employee.material.request")
     quantity = fields.Integer(default=1)
-    product_uom_id = fields.Many2one(
+    product_uom = fields.Many2one(
         "uom.uom",
         "Unit of Measure",
         default=lambda self: self._default_uom_id()
@@ -38,11 +38,23 @@ class HrEmployeeMaterial(models.Model):
             if rec.product_id.name and rec.employee_id.name:
                 rec.name = rec.product_id.name + _(" to ") + rec.employee_id.name
 
+    def _validate_allocation_vals(self):
+        return {
+            'state': 'valid',
+            'start_date': date.today()
+        }
+
     def validate_allocation(self):
         for rec in self:
-            rec.state = 'valid'
-            rec.start_date = date.today()
+            rec.write(rec._validate_allocation_vals())
 
     def expire_allocation(self):
         for rec in self:
             rec.state = 'expired'
+
+    def _accept_request_vals(self):
+        return {'state': 'accepted'}
+
+    def _accept_request(self):
+        for rec in self:
+            rec.write(rec._accept_request_vals())
