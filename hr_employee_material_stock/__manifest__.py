@@ -12,6 +12,7 @@
     'depends': ['hr_employee_material', 'stock'
     ],
     'data': [
+        'views/stock_move.xml',
         'views/procurement_group.xml',
         'views/hr_employee_material.xml',
         'views/hr_employee_material_request.xml',
