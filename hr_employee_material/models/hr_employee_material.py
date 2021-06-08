@@ -4,6 +4,7 @@
 from odoo import api, fields, models, _
 from datetime import date
 
+
 class HrEmployeeMaterial(models.Model):
 
     _name = 'hr.employee.material'
@@ -13,7 +14,7 @@ class HrEmployeeMaterial(models.Model):
     name = fields.Char(compute='_compute_name')
     product_id = fields.Many2one(comodel_name='product.product', required=True,
                                  domain=[('is_employee_material', '=', '1')])
-    employee_id = fields.Many2one(comodel_name='hr.employee')
+    employee_id = fields.Many2one(comodel_name='hr.employee', related="material_request_id.employee_id", store=True)
     state = fields.Selection([("draft", "Draft"),
                               ("accepted", "Accepted"),
                               ("valid", "Valid"),
@@ -21,7 +22,7 @@ class HrEmployeeMaterial(models.Model):
                               ("cancelled", "Cancelled")],
                              default="draft", track_visibility=True)
     start_date = fields.Date()
-    material_request_id = fields.Many2one(comodel_name="hr.employee.material.request")
+    material_request_id = fields.Many2one(comodel_name="hr.employee.material.request", required=True)
     quantity = fields.Integer(default=1)
     product_uom = fields.Many2one(
         "uom.uom",
@@ -41,7 +42,7 @@ class HrEmployeeMaterial(models.Model):
     def _validate_allocation_vals(self):
         return {
             'state': 'valid',
-            'start_date': date.today()
+            'start_date': date.today() if not self.start_date else self.start_date,
         }
 
     def validate_allocation(self):
