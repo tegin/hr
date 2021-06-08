@@ -43,10 +43,3 @@ class HrEmployeeMaterialRequest(models.Model):
         for rec in self:
             rec.state = 'cancelled'
             rec.line_ids.update({'state': 'cancelled'})
-
-    @api.onchange("employee_id", "line_ids", "line_ids.employee_id")
-    def _set_employee_material_fields(self):
-        for rec in self:
-            for line in rec.line_ids:
-                line.employee_id = rec.employee_id
-

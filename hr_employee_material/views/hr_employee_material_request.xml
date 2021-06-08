@@ -36,6 +36,7 @@
                                     <field name="quantity"/>
                                     <field name="product_uom"/>
                                     <field name="state" readonly="1"/>
+                                    <field name="material_request_id" invisible="1" />
                                     <field name="employee_id" invisible="1"/>
                                 </tree>
                             </field>
