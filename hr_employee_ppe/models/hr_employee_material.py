@@ -49,11 +49,14 @@ class HrEmployeeMaterial(models.Model):
                 if rec.product_id.certification:
                     rec.certification = rec.product_id.certification
 
+    def _validate_allocation_vals(self):
+        res = super()._validate_allocation_vals()
+        res['issued_by'] = self.env.user
+        return res
+
     def validate_allocation(self):
-        super().validate_allocation()
         self._check_dates()
-        for rec in self:
-            rec.issued_by = self.env.user
+        super().validate_allocation()
 
     @api.depends("end_date", "start_date")
     def _compute_state(self):
