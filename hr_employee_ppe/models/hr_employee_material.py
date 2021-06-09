@@ -3,6 +3,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from datetime import date
 
 
 class HrEmployeeMaterial(models.Model):
@@ -10,9 +11,6 @@ class HrEmployeeMaterial(models.Model):
     _name = "hr.employee.material"
     _inherit = ["hr.employee.material"]
 
-    name = fields.Char(
-        compute='_compute_name',
-    )
     is_ppe = fields.Boolean()
     #start_date = fields.Date(string="Start Date", default=fields.Date.today())
     end_date = fields.Date()
@@ -51,20 +49,20 @@ class HrEmployeeMaterial(models.Model):
 
     def _validate_allocation_vals(self):
         res = super()._validate_allocation_vals()
-        res['issued_by'] = self.env.user
+        res['issued_by'] = self.env.user.id
         return res
 
     def validate_allocation(self):
         self._check_dates()
         super().validate_allocation()
-
+    """
     @api.depends("end_date", "start_date")
     def _compute_state(self):
         for rec in self:
             if rec.state == "valid" and rec.expire and rec.end_date:
                 if rec.end_date < fields.Date.today():
                     rec.status = "expired"
-
+    """
     @api.model
     def cron_ppe_expiry_verification(self, date_ref=None):
         if not date_ref:
@@ -73,7 +71,7 @@ class HrEmployeeMaterial(models.Model):
         domain.extend([("end_date", "<", date_ref)])
         ppes_to_check_expiry = self.search(domain)
         for record in ppes_to_check_expiry:
-            record.status = "expired"
+            record.state = "expired"
 
     def _check_dates(self):
         for record in self:
@@ -85,9 +83,10 @@ class HrEmployeeMaterial(models.Model):
                             end date for expirable PPEs."""
                         )
                     )
-                if record.end_date < record.start_date:
+                start_date = record.start_date if record.start_date else date.today()
+                if record.end_date < start_date:
                     raise ValidationError(
-                        _("End date cannot occur earlier than the start date.")
+                        _("End date cannot occur earlier than start date.")
                     )
 
     def action_view_ppe_report(self):

@@ -20,7 +20,6 @@
         'reports/hr_employee_ppe_report.xml'
     ],
     'demo': [
-        'demo/hr_employee_ppe_demo.xml',
     ],
     'installable': True
 }
