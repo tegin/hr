@@ -11,9 +11,9 @@
             <xpath expr="//field[@name='is_employee_material']" position="after">
                 <field name="is_ppe" string="Is PPE" attrs="{'invisible': [('is_employee_material', '=', False)]}"/>
                 <field name="indications" string="PPE Indications" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
-                <field name="expirable" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
-                <field name="certification" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
-                <field name="description" string="PPE Description" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
+                <field name="expirable_ppe" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
+                <field name="ppe_duration" string="PPE Duration" attrs="{'invisible': [('expirable_ppe', '=', False)]}"/>
+                <field name="ppe_interval_type" string="PPE Interval Type" attrs="{'invisible': [('expirable_ppe', '=', False)]}"/>
             </xpath>
         </field>
     </record>
