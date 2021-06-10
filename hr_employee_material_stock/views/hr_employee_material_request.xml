@@ -29,7 +29,7 @@
             </xpath>
            <xpath expr="//field[@name='employee_id']" position="after">
                  <field name="location_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                 <field name="procurement_group_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/> <!-- TODO: Invisible -->
+                 <field name="procurement_group_id" invisible="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
            </xpath>
             <xpath expr="//tree/field[@name='state']" position="before">
                  <field name="qty_delivered"/>
