@@ -30,7 +30,7 @@
                         <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         <field name="product_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         <field name="quantity" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="product_uom_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     </group>
                     <group>
                         <field name="material_request_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
@@ -55,9 +55,9 @@
             <tree string="Employee Materials" create="0">
                 <field name="name" invisible="1"/>
                 <field name="product_id"/>
-                <field name="product_uom"/>
                 <field name="employee_id"/>
                 <field name="quantity"/>
+                <field name="product_uom_id"/>
                 <field name="start_date"/>
                 <field name="state"/>
                 <field name="material_request_id" invisible="1" />
