@@ -13,7 +13,7 @@ class HrEmployeeMaterial(models.Model):
 
     name = fields.Char(compute='_compute_name')
     product_id = fields.Many2one(comodel_name='product.product', required=True,
-                                 domain=[('is_employee_material', '=', '1')])
+                                 domain=[('is_employee_material', '=', True)])
     employee_id = fields.Many2one(comodel_name='hr.employee', related="material_request_id.employee_id", store=True)
     state = fields.Selection([("draft", "Draft"),
                               ("accepted", "Accepted"),
@@ -22,9 +22,9 @@ class HrEmployeeMaterial(models.Model):
                               ("cancelled", "Cancelled")],
                              default="draft", track_visibility=True)
     start_date = fields.Date()
-    material_request_id = fields.Many2one(comodel_name="hr.employee.material.request", required=True)
+    material_request_id = fields.Many2one(comodel_name="hr.employee.material.request", required=True, ondelete='cascade')
     quantity = fields.Integer(default=1)
-    product_uom = fields.Many2one(
+    product_uom_id = fields.Many2one(
         "uom.uom",
         "Unit of Measure",
         default=lambda self: self._default_uom_id()
