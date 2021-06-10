@@ -40,4 +40,27 @@
             </xpath>
         </field>
     </record>
+     <record id="hr_employee_material_form_view_base_user" model="ir.ui.view">
+        <field name="name">hr.employee.material.form (in hr_employee_ppe)</field>
+        <field name="model">hr.employee.material</field>
+        <field name="inherit_id" ref="hr_employee_ppe.hr_employee_material_form_view"/>
+        <field name="groups_id" eval="[(6,0,[ref('base.group_user')])]"/>
+        <field name="arch" type="xml">
+            <field name="expire_ppe" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </field>
+            <field name="expire_ppe" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </field>
+            <field name="start_date" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </field>
+            <field name="end_date" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </field>
+             <field name="certification" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </field>
+        </field>
+    </record>
 </odoo>
