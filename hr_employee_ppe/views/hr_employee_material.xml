@@ -8,10 +8,8 @@
         <field name="inherit_id" ref="hr_employee_material.hr_employee_material_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='start_date']" position="after">
+                <field name="expire_ppe" string="Expirable"/>
                 <field name="end_date"/>
-                <field name="expire"/>
-                <field name="end_date" attrs="{'invisible':[('expire', '=', False)]}"/>
-                <field name="state" widget="label_selection" options="{'classes': {'expired': 'danger', 'valid': 'success'}}"/>
             </xpath>
         </field>
     </record>
@@ -22,22 +20,14 @@
         <field name="model">hr.employee.material</field>
         <field name="inherit_id" ref="hr_employee_material.hr_employee_material_form_view"/>
         <field name="arch" type="xml">
-             <xpath expr="//button[@name='validate_allocation']" position="after">
-                <button
-                    type="object"
-                    name="action_view_ppe_report"
-                    string="Print Receipt of PPE"
-                    attrs="{'invisible':['|',('is_ppe','=',False), ('state', 'not in', ('accepted', 'valid'))]}"
-                    />
-            </xpath>
             <xpath expr="//field[@name='product_id']" position="after">
                 <field name="is_ppe" string="Is PPE" readonly="1" attrs="{'invisible':[('is_ppe', '=', False)]}"/>
             </xpath>
              <xpath expr="//field[@name='start_date']" position="before">
-                <field name="expire" attrs="{'invisible':[('is_ppe', '=', False)],'readonly': [('state', 'not in', ('draft','accepted'))]}" />
+                <field name="expire_ppe" string="Expirable" attrs="{'invisible':[('is_ppe', '=', False)],'readonly': [('state', 'not in', ('draft','accepted'))]}" />
             </xpath>
             <xpath expr="//field[@name='start_date']" position="after">
-                <field name="end_date" attrs="{'invisible':[('expire', '=', False)],'readonly': [('state', 'not in', ('draft','accepted'))]}" />
+                <field name="end_date" attrs="{'invisible':[('expire_ppe', '=', False)],'readonly': [('state', 'not in', ('draft','accepted'))]}" />
             </xpath>
              <xpath expr="//group[@name='date']" position="after">
                  <group name="directions_info" string="PPE Indications" attrs="{'invisible':[('is_ppe', '=', False)]}">
@@ -45,8 +35,7 @@
                  </group>
                  <group string="Certification Information" attrs="{'invisible':[('is_ppe', '=', False)]}">
                         <field name="issued_by" attrs="{'invisible':[('is_ppe', '=', False)]}" readonly="1"/>
-                        <field name="certification" attrs="{'invisible':[('is_ppe', '=', False)]}" readonly="1"/>
-                        <field name="description" attrs="{'invisible':[('is_ppe', '=', False)]}" readonly="1"/>
+                        <field name="certification" attrs="{'invisible':[('is_ppe', '=', False)],'readonly': [('state', 'not in', ('draft','accepted'))]}"/>
                  </group>
             </xpath>
         </field>

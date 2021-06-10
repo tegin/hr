@@ -9,17 +9,22 @@
         <field name="model">hr.employee.material.request</field>
         <field name="inherit_id" ref="hr_employee_material.hr_employee_material_request_form_view"/>
         <field name="arch" type="xml">
-             <xpath expr="//notebook//field[@name='employee_id']" position="after">
-                 <field name="is_ppe" invisible="1"/>
-                 <field name="description" invisible="1"/>
-                 <field name="certification" invisible="1"/>
-                 <field name="expire" invisible="1"/>
-                 <field name="description" invisible="1"/>
-                 <field name="indications" invisible="1"/>
-             </xpath>
+             <xpath expr="//button[@name='cancel_request']" position="before">
+                <button
+                    type="object"
+                    name="action_view_ppe_report"
+                    string="Print Receipt of PPE"
+                    attrs="{'invisible':['|',('contains_ppe','=',False), ('state', 'not in', ('draft', 'accepted'))]}"/>
+            </xpath>
+            <xpath expr="//group[@name='employee']//field[@name='employee_id']" position="after">
+                 <field name="contains_ppe" invisible="1" string="Contains PPE"/>
+            </xpath>
+            <xpath expr="//notebook//field[@name='product_id']" position="after">
+                <field name="is_ppe" string="Is PPE"/>
+                <field name="expire_ppe" invisible="1"/>
+                <field name="indications" invisible="1"/>
+            </xpath>
         </field>
     </record>
-
-
 
 </odoo>

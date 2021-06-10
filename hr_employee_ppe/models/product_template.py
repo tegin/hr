@@ -9,24 +9,22 @@ class ProductTemplate(models.Model):
     _name = 'product.template'
     _inherit = ['product.template']
 
-    """
-    product_id = fields.Many2one(
-        required=True,
-        comodel_name='product.product',
-        domain="[('type', '=', 'consu')]"
-    )
-    """
     is_ppe = fields.Boolean(default=False)
     indications = fields.Text(
         string="Indications",
         help="Situations in which the employee should use this equipment. Only for ppe",
     )
-    expirable = fields.Boolean(
+    expirable_ppe = fields.Boolean(
         help='Select this option if the PPE has expiry date.', default=False
     )
-    certification = fields.Char(
-        string="Certification Number", help="Certification Number"
-    )
-    description = fields.Text()
+    ppe_duration = fields.Integer(string='PPE duration')
+    ppe_interval_type = fields.Selection([
+        ('minutes', 'Minutes'),
+        ('hours', 'Hours'),
+        ('days', 'Days'),
+        ('weeks', 'Weeks'),
+        ('months', 'Months')
+    ], string='Interval Unit')
 
-
+    def _default_uom_id(self):
+        return self.env.ref("uom.product_uom_unit")
