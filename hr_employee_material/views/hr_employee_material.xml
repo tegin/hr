@@ -15,19 +15,21 @@
                      string="Validate"
                      name="validate_allocation"
                      class="oe_highlight"
-                     states="accepted"/>
+                     states="accepted"
+                     groups="hr.group_hr_user"/>
                     <button
                      type="object"
                      string="Expire"
                      name="expire_allocation"
                      states="valid"
+                     groups="hr.group_hr_user"
                      />
                     <field name="state"  widget="statusbar" statusbar_visible="draft,accepted,valid,expired"/>
                 </header>
                 <sheet>
                     <field name="name" invisible="1"/>
                     <group name="main">
-                        <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}" groups="hr.group_hr_user"/>
                         <field name="product_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         <field name="quantity" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         <field name="product_uom_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
@@ -55,7 +57,7 @@
             <tree string="Employee Materials" create="0">
                 <field name="name" invisible="1"/>
                 <field name="product_id"/>
-                <field name="employee_id"/>
+                <field name="employee_id" groups="hr.group_hr_user"/>
                 <field name="quantity"/>
                 <field name="product_uom_id"/>
                 <field name="start_date"/>
@@ -72,7 +74,7 @@
             <search>
                 <field name="name"/>
                 <field name="state"/>
-                <field name="employee_id"/>
+                <field name="employee_id" groups="hr.group_hr_user"/>
                 <field name="product_id"/>
                 <group expand="0" name="group_by" string="Group By">
                     <filter name="state" string="State" context="{'group_by' : 'state'}" />
