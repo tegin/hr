@@ -17,8 +17,8 @@ class StockPicking(models.Model):
                 if move.state == 'done':
                     request_lines = self.material_request_id.line_ids.filtered(lambda x: x.product_id == move.product_id)
                     for line in request_lines:
-                        qty_initial = line.product_uom._compute_quantity(line.quantity, line.product_uom)
-                        qty_done = line.product_uom._compute_quantity(line.qty_delivered, line.product_uom)
+                        qty_initial = line.product_uom_id._compute_quantity(line.quantity, line.product_uom_id)
+                        qty_done = line.product_uom_id._compute_quantity(line.qty_delivered, line.product_uom_id)
                         if qty_done:
                             if qty_initial <= qty_done:
                                 line.state = 'valid'

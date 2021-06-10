@@ -25,7 +25,7 @@ class HrEmployeeMaterial(models.Model):
         for line in self:
             qty = 0.0
             for move in line.move_ids.filtered(lambda r: r.state == 'done' and line.product_id == r.product_id):
-                qty += move.product_uom._compute_quantity(move.product_uom_qty, line.product_uom)
+                qty += move.product_uom._compute_quantity(move.product_uom_qty, line.product_uom_id)
             line.qty_delivered = qty
 
     def _skip_procurement(self):
@@ -66,7 +66,7 @@ class HrEmployeeMaterial(models.Model):
                 # as PO.
                 self.env['procurement.group'].sudo().run(
                     allocation.product_id, allocation.quantity,
-                    allocation.product_uom,
+                    allocation.product_uom_id,
                     allocation.location_id, allocation.name,
                     allocation.name, values)
             except UserError as error:
