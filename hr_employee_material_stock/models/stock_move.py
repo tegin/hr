@@ -23,7 +23,7 @@ class StockMove(models.Model):
 
     def _action_cancel(self):
         super()._action_cancel()
-        for rec in self:
+        for rec in self.sudo():
             if not rec.employee_material_id.qty_delivered:
                 rec.employee_material_id.update({'state': 'cancelled'})
             else:

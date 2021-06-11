@@ -7,9 +7,10 @@
         <field name="name">stock.picking.form(in hr_employee_material_stock)</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="groups_id" eval="[(4, ref('hr.group_hr_user'))]" />
         <field name="arch" type="xml">
             <xpath expr="//page[@name='extra']//group//field[@name='priority']" position="after">
-                 <field name="material_request_id" invisible="1"/>
+                 <field name="material_request_id"/>
             </xpath>
         </field>
     </record>
