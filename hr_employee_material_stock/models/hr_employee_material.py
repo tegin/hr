@@ -19,6 +19,12 @@ class HrEmployeeMaterial(models.Model):
     )
     qty_delivered = fields.Float('Delivered Quantity', copy=False, compute='_compute_qty_delivered', compute_sudo=True, store=True)
     move_ids = fields.One2many('stock.move', 'employee_material_id', string='Stock Moves')
+    skip_procurement = fields.Boolean(compute='_compute_skip_procurement')
+
+    @api.depends("state", "product_id", "product_id.type")
+    def _compute_skip_procurement(self):
+        for record in self:
+            record.skip_procurement = record._skip_procurement()
 
     @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom')
     def _compute_qty_delivered(self):
@@ -29,8 +35,7 @@ class HrEmployeeMaterial(models.Model):
             line.qty_delivered = qty
 
     def _skip_procurement(self):
-        return self.state != 'accepted' or \
-               self.product_id.type not in ('consu', 'product')
+        return self.product_id.type not in ('consu', 'product')
 
     def _prepare_procurement_values(self, group_id=False):
 
