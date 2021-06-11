@@ -22,8 +22,12 @@
             </xpath>
             <xpath expr="//notebook//field[@name='product_id']" position="after">
                 <field name="is_ppe" string="Is PPE"/>
-                <field name="expire_ppe" invisible="1"/>
                 <field name="indications" invisible="1"/>
+            </xpath>
+             <xpath expr="//notebook//field[@name='start_date']" position="after">
+                <field name="expire_ppe" string="Expirable" groups="hr.group_hr_user"/>
+                <field name="end_date" groups="hr.group_hr_user"/>
+                <field name="certification" groups="hr.group_hr_user"/>
             </xpath>
         </field>
     </record>
