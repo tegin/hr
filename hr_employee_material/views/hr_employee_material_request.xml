@@ -27,6 +27,7 @@
                      <field name="state"  widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div name="button_box" class="oe_button_box"/>
                     <group name="employee">
                         <field name="name" invisible="1"/>
                         <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}" groups="hr.group_hr_user" />
@@ -38,6 +39,7 @@
                                     <field name="product_id"/>
                                     <field name="quantity"/>
                                     <field name="product_uom_id"/>
+                                    <field name="start_date" groups="hr.group_hr_user"/>
                                     <field name="state" readonly="1"/>
                                     <field name="material_request_id" invisible="1"/>
                                     <field name="employee_id" invisible="1"/>
