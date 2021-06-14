@@ -29,7 +29,6 @@ class HrEmployeeMaterial(models.Model):
         "Unit of Measure",
         default=lambda self: self._default_uom_id()
     )
-
     def _default_uom_id(self):
         return self.env.ref("uom.product_uom_unit")
 

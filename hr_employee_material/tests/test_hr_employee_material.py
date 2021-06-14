@@ -24,7 +24,7 @@ class TestHREmployeeMaterial(TransactionCase):
                 'email': 'user@test.com',
                 "groups_id": [
                     (4, self.env.ref('base.group_user').id),
-                    (4, self.env.ref("hr_employee_material.hr_employee_material_group").id)
+                    (4, self.env.ref('hr.group_hr_user').id)
                 ],
             }
         )

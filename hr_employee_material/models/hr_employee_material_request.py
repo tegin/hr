@@ -20,6 +20,7 @@ class HrEmployeeMaterialRequest(models.Model):
                               ("accepted", "Accepted"),
                               ("cancelled", "Cancelled")],
                              default='draft', track_visibility=True)
+    observations = fields.Text()
 
     def _default_employee_id(self):
         return self.env.user.employee_ids[:1]

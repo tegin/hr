@@ -46,6 +46,9 @@
                                 </tree>
                             </field>
                         </page>
+                        <page name="observations" string="Observations">
+                            <field name="observations"/>
+                        </page>
                     </notebook>
                 </sheet>
 
