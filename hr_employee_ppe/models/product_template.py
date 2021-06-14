@@ -25,6 +25,3 @@ class ProductTemplate(models.Model):
         ('weeks', 'Weeks'),
         ('months', 'Months')
     ], string='Interval Unit')
-
-    def _default_uom_id(self):
-        return self.env.ref("uom.product_uom_unit")
