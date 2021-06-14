@@ -47,7 +47,7 @@ class HrEmployeeMaterial(models.Model):
         """
         return {
             'group_id': group_id or self.procurement_group_id.id or False,
-            'partner_id': self.employee_id.user_id.partner_id.id,
+            'partner_id': self.employee_id.user_id.partner_id,
             'employee_material_id': self.id,
         }
 
@@ -83,3 +83,9 @@ class HrEmployeeMaterial(models.Model):
     def _accept_request(self):
         super()._accept_request()
         self._action_launch_procurement_rule()
+
+    def _validate_allocation_vals(self):
+        res = super()._validate_allocation_vals()
+        if self.skip_procurement:
+            res['qty_delivered'] = self.quantity
+        return res
