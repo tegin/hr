@@ -21,7 +21,6 @@ class StockPicking(models.Model):
                         qty_done = line.product_uom_id._compute_quantity(line.qty_delivered, line.product_uom_id)
                         if qty_done:
                             if qty_initial <= qty_done:
-                                line.state = 'valid'
-                            line.start_date = date.today()
+                                line.validate_allocation()
 
 
