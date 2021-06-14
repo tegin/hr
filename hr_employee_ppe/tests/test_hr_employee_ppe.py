@@ -18,7 +18,9 @@ class TestHREmployeePPE(TransactionCase):
                 'is_employee_material': True,
                 'is_ppe': True,
                 'indications': "Test indications",
-                'expirable_ppe': True
+                'expirable_ppe': True,
+                'ppe_interval_type': 'days',
+                'ppe_duration': 3,
             }
         )
         self.product_employee_ppe_no_expirable = self.env['product.template'].create(
@@ -37,7 +39,7 @@ class TestHREmployeePPE(TransactionCase):
                 'email': 'user@test.com',
                 "groups_id": [
                     (4, self.env.ref('base.group_user').id),
-                    (4, self.env.ref("hr_employee_material.hr_employee_material_group").id)
+                    (4, self.env.ref("hr.group_hr_user").id)
                 ],
             }
         )
@@ -106,13 +108,10 @@ class TestHREmployeePPE(TransactionCase):
         self.assertNotEqual(self.hr_employee_ppe_no_expirable.state, "expired")
 
     def test_check_dates(self):
-        self.hr_employee_ppe_expirable._compute_fields()
-        with self.assertRaises(ValidationError):
-            self.hr_employee_ppe_expirable.validate_allocation()
-
         with self.assertRaises(ValidationError):
             self.hr_employee_ppe_expirable.start_date = "2020-01-01"
             self.hr_employee_ppe_expirable.end_date = "2019-12-31"
+            self.hr_employee_ppe_expirable._compute_fields()
             self.hr_employee_ppe_expirable.validate_allocation()
 
     def test_compute_contains_ppe(self):

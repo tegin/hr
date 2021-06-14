@@ -23,6 +23,11 @@ class HrEmployeeMaterial(models.Model):
     )
     issued_by = fields.Many2one(comodel_name="res.users")
 
+    def _accept_request_vals(self):
+        res = super()._accept_request_vals()
+        res['issued_by'] = self.env.user.id
+        return res
+
     @api.onchange('product_id')
     def _compute_fields(self):
         for rec in self:
@@ -35,7 +40,6 @@ class HrEmployeeMaterial(models.Model):
 
     def _validate_allocation_vals(self):
         res = super()._validate_allocation_vals()
-        res['issued_by'] = self.env.user.id
         if not self.end_date and self.product_id.expirable_ppe:
             res["end_date"] = fields.Date.today() + _intervalTypes[
                 self.product_id.ppe_interval_type](self.product_id.ppe_duration)
