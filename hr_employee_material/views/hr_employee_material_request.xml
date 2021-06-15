@@ -34,8 +34,10 @@
                     </group>
                     <notebook>
                         <page string="Material">
-                            <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}" >
-                                <tree editable="bottom">
+                            <field name="line_ids"
+                                   mode="tree,form"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}" >
+                                <tree editable="bottom" name="materials_lines">
                                     <field name="product_id"/>
                                     <field name="quantity"/>
                                     <field name="product_uom_id"/>
@@ -44,6 +46,16 @@
                                     <field name="material_request_id" invisible="1"/>
                                     <field name="employee_id" invisible="1"/>
                                 </tree>
+                                <form>
+                                    <group name="materials_lines_form">
+                                        <field name="product_id"/>
+                                        <field name="quantity"/>
+                                        <field name="product_uom_id"/>
+                                        <field name="start_date" groups="hr.group_hr_user"/>
+                                        <field name="state" readonly="1" invisible="1"/>
+                                        <field name="employee_id" invisible="1"/>
+                                    </group>
+                                </form>
                             </field>
                         </page>
                         <page name="observations" string="Observations">
