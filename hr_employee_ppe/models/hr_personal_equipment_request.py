@@ -4,9 +4,9 @@
 from odoo import api, fields, models, _
 
 
-class HrEmployeeMaterialRequest(models.Model):
+class HrPersonalEquipmentRequest(models.Model):
 
-    _inherit = 'hr.employee.material.request'
+    _inherit = 'hr.personal.equipment.request'
 
     contains_ppe = fields.Boolean(compute='_compute_contains_ppe')
 

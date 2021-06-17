@@ -1,3 +1,3 @@
-from . import hr_employee_material
+from . import hr_personal_equipment
 from . import product_template
-from . import hr_employee_material_request
+from . import hr_personal_equipment_request

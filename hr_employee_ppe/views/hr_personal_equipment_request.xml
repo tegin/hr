@@ -4,10 +4,10 @@
 
 <odoo>
 
-    <record model="ir.ui.view" id="hr_employee_material_request_form_view">
-        <field name="name">hr.employee.material.request.form (in hr_employee_ppe)</field>
-        <field name="model">hr.employee.material.request</field>
-        <field name="inherit_id" ref="hr_employee_material.hr_employee_material_request_form_view"/>
+    <record model="ir.ui.view" id="hr_personal_equipment_request_form_view">
+        <field name="name">hr.personal.equipment.request.form (in hr_employee_ppe)</field>
+        <field name="model">hr.personal.equipment.request</field>
+        <field name="inherit_id" ref="hr_personal_equipment.hr_personal_equipment_request_form_view"/>
         <field name="arch" type="xml">
              <xpath expr="//button[@name='cancel_request']" position="before">
                 <button
