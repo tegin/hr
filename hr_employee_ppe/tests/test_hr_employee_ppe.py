@@ -15,7 +15,7 @@ class TestHREmployeePPE(TransactionCase):
         self.product_employee_ppe_expirable = self.env['product.template'].create(
             {
                 'name': 'Product Test Employee PPE',
-                'is_employee_material': True,
+                'is_personal_equipment': True,
                 'is_ppe': True,
                 'indications': "Test indications",
                 'expirable_ppe': True,
@@ -26,7 +26,7 @@ class TestHREmployeePPE(TransactionCase):
         self.product_employee_ppe_no_expirable = self.env['product.template'].create(
             {
                 'name': 'Product Test Employee No PPE',
-                'is_employee_material': True,
+                'is_personal_equipment': True,
                 'is_ppe': True,
                 'indications': "Test indications",
                 'expirable_ppe': False,
@@ -52,26 +52,26 @@ class TestHREmployeePPE(TransactionCase):
 
         lines = [
             {
-                'name': 'Employee Material PPE Expirable',
+                'name': 'Personal Equipment PPE Expirable',
                 'product_id': self.product_employee_ppe_expirable.product_variant_id.id,
                 'quantity': 3
             },
             {
-                'name': 'Employee Material No Expirable',
+                'name': 'Personal Equipment No Expirable',
                 'product_id': self.product_employee_ppe_no_expirable.product_variant_id.id,
                 'quantity': 2
             }
         ]
 
-        self.employee_material_request = self.env['hr.employee.material.request'].sudo(self.user.id).create(
+        self.personal_equipment_request = self.env['hr.personal.equipment.request'].sudo(self.user.id).create(
             {
-                'name': 'Employee Material Request Test',
+                'name': 'Personal Equipment Request Test',
                 'line_ids': [(0, 0, line) for line in lines],
             }
         )
 
-        self.hr_employee_ppe_expirable = self.employee_material_request.line_ids[0]
-        self.hr_employee_ppe_no_expirable = self.employee_material_request.line_ids[1]
+        self.hr_employee_ppe_expirable = self.personal_equipment_request.line_ids[0]
+        self.hr_employee_ppe_no_expirable = self.personal_equipment_request.line_ids[1]
 
     def test_compute_fields(self):
         self.hr_employee_ppe_expirable._compute_fields()
@@ -81,7 +81,7 @@ class TestHREmployeePPE(TransactionCase):
 
     def test_validate_allocation(self):
         self.assertFalse(self.hr_employee_ppe_expirable.issued_by)
-        self.hr_employee_ppe_expirable.sudo(self.user).validate_allocation()
+        self.personal_equipment_request.sudo(self.user).accept_request()
         self.assertTrue(self.hr_employee_ppe_expirable.issued_by)
         self.assertEqual(self.hr_employee_ppe_expirable.issued_by, self.user)
 
@@ -115,44 +115,44 @@ class TestHREmployeePPE(TransactionCase):
             self.hr_employee_ppe_expirable.validate_allocation()
 
     def test_compute_contains_ppe(self):
-        # Without materials ppe
+        # Without ppes
         product_employee_no_ppe = self.env['product.template'].create(
             {
                 'name': 'Product Test Employee No PPE',
-                'is_employee_material': True,
+                'is_personal_equipment': True,
                 'is_ppe': False,
             }
         )
         lines = [{
-                'name': 'Employee Material PPE Expirable',
+                'name': 'Personal Equipment PPE Expirable',
                 'product_id': product_employee_no_ppe.product_variant_id.id,
                 'quantity': 3
             }]
 
-        employee_material_request = self.env['hr.employee.material.request'].sudo(self.user.id).create(
+        personal_equipment_request = self.env['hr.personal.equipment.request'].sudo(self.user.id).create(
             {
-                'name': 'Employee Material Request Test',
+                'name': 'Personal Equipment Request Test',
                 'line_ids': [(0, 0, line) for line in lines],
             }
         )
-        employee_material_request._compute_contains_ppe()
-        self.assertFalse(employee_material_request.contains_ppe)
+        personal_equipment_request._compute_contains_ppe()
+        self.assertFalse(personal_equipment_request.contains_ppe)
 
-        # With materials ppe
+        # With ppes
         lines.append({
-                'name': 'Employee Material PPE Expirable',
+                'name': 'Personal Equipment PPE Expirable',
                 'is_ppe': True,
                 'product_id': self.product_employee_ppe_expirable.product_variant_id.id,
                 'quantity': 3
             })
-        employee_material_request['line_ids'] = [(0, 0, line) for line in lines]
-        employee_material_request._compute_contains_ppe()
-        self.assertTrue(employee_material_request.contains_ppe)
+        personal_equipment_request['line_ids'] = [(0, 0, line) for line in lines]
+        personal_equipment_request._compute_contains_ppe()
+        self.assertTrue(personal_equipment_request.contains_ppe)
 
     def test_action_view_ppe_report(self):
-        action = self.employee_material_request.action_view_ppe_report()
+        action = self.personal_equipment_request.action_view_ppe_report()
         self.assertEqual(action['name'], 'Receipt of Personal protection Equipment')
         self.assertEqual(len(action["context"]["active_ids"]), 1)
-        self.assertEqual(action["context"]["active_ids"][0], self.employee_material_request.id)
+        self.assertEqual(action["context"]["active_ids"][0], self.personal_equipment_request.id)
         self.assertEqual(action['report_type'], 'qweb-pdf')
 

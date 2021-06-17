@@ -7,10 +7,10 @@ from odoo.addons.base.models.ir_cron import _intervalTypes
 from datetime import date
 
 
-class HrEmployeeMaterial(models.Model):
+class HrPersonalEquipment(models.Model):
 
-    _name = "hr.employee.material"
-    _inherit = ["hr.employee.material"]
+    _name = "hr.personal.equipment"
+    _inherit = ["hr.personal.equipment"]
 
     is_ppe = fields.Boolean()
     end_date = fields.Date()

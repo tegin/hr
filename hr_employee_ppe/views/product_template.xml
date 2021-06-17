@@ -8,9 +8,9 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
-            <page name="employee_material" position="inside">
+            <page name="personal_equipment" position="inside">
                 <group string="Employee PPE">
-                    <field name="is_ppe" string="Is PPE" attrs="{'invisible': [('is_employee_material', '=', False)]}"/>
+                    <field name="is_ppe" string="Is PPE" attrs="{'invisible': [('is_personal_equipment', '=', False)]}"/>
                     <field name="indications" string="PPE Indications" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
                     <field name="expirable_ppe" attrs="{'invisible': [('is_ppe', '=', False)]}"/>
                     <field name="ppe_duration" string="PPE Duration" attrs="{'invisible': [('expirable_ppe', '=', False)], 'required': [('expirable_ppe', '!=', False)]}"/>

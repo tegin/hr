@@ -7,7 +7,7 @@ def migrate(env, version):
     openupgrade.logged_query(
         env.cr,
         """
-        UPDATE hr_employee_material hmm
+        UPDATE hr_personal_equipment hmm
         SET self_invoice_number = ai.self_invoice_number,
             set_self_invoice = ai.set_self_invoice
             can_self_invoice = ai.can_self_invoice
