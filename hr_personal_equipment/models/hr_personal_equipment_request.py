@@ -4,18 +4,18 @@
 from odoo import api, fields, models, _
 
 
-class HrEmployeeMaterialRequest(models.Model):
+class HrPersonalEquipmentRequest(models.Model):
 
-    _name = 'hr.employee.material.request'
-    _description = 'This model allows to create a employee material request'
+    _name = 'hr.personal.equipment.request'
+    _description = 'This model allows to create a personal equipment request'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(compute="_compute_name")
     employee_id = fields.Many2one(
         comodel_name="hr.employee", string="Employee", required=True, default=lambda self: self._default_employee_id()
     )
-    line_ids = fields.One2many(string="Material", comodel_name="hr.employee.material",
-                               inverse_name="material_request_id", copy=True)
+    line_ids = fields.One2many(string="Personal Equipment", comodel_name="hr.personal.equipment",
+                               inverse_name="equipment_request_id", copy=True)
     state = fields.Selection([("draft", "Draft"),
                               ("accepted", "Accepted"),
                               ("cancelled", "Cancelled")],
@@ -28,7 +28,7 @@ class HrEmployeeMaterialRequest(models.Model):
     @api.depends("employee_id")
     def _compute_name(self):
         for rec in self:
-            rec.name = _("Material Request by %s") % rec.employee_id.name
+            rec.name = _("Personal Equipment Request by %s") % rec.employee_id.name
 
     def accept_request(self):
         for rec in self:

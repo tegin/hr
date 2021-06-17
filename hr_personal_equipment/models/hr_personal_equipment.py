@@ -5,16 +5,16 @@ from odoo import api, fields, models, _
 from datetime import date
 
 
-class HrEmployeeMaterial(models.Model):
+class HrPersonalEquipment(models.Model):
 
-    _name = 'hr.employee.material'
-    _description = 'Adds employee material information and allocation'
+    _name = 'hr.personal.equipment'
+    _description = 'Adds personal equipment information and allocation'
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(compute='_compute_name')
     product_id = fields.Many2one(comodel_name='product.product', required=True,
-                                 domain=[('is_employee_material', '=', True)])
-    employee_id = fields.Many2one(comodel_name='hr.employee', related="material_request_id.employee_id", store=True)
+                                 domain=[('is_personal_equipment', '=', True)])
+    employee_id = fields.Many2one(comodel_name='hr.employee', related="equipment_request_id.employee_id", store=True)
     state = fields.Selection([("draft", "Draft"),
                               ("accepted", "Accepted"),
                               ("valid", "Valid"),
@@ -22,7 +22,7 @@ class HrEmployeeMaterial(models.Model):
                               ("cancelled", "Cancelled")],
                              default="draft", track_visibility=True)
     start_date = fields.Date()
-    material_request_id = fields.Many2one(comodel_name="hr.employee.material.request", required=True, ondelete='cascade')
+    equipment_request_id = fields.Many2one(comodel_name="hr.personal.equipment.request", required=True, ondelete='cascade')
     quantity = fields.Integer(default=1)
     product_uom_id = fields.Many2one(
         "uom.uom",

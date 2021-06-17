@@ -4,16 +4,17 @@
 
 <odoo>
 
-    <record model="ir.ui.view" id="hr_employee_material_form_view">
-        <field name="name">hr.employee.material.form (in hr_employee_material)</field>
-        <field name="model">hr.employee.material</field>
+    <record model="ir.ui.view" id="hr_personal_equipment_form_view">
+        <field name="name">hr.personal.equipment.form (in hr_personal_equipment)</field>
+        <field name="model">hr.personal.equipment</field>
         <field name="arch" type="xml">
-            <form string="Employee Material" create="0">
+            <form string="Employee Personal Equipment" create="0">
                 <header>
                     <button
                      type="object"
                      string="Validate"
                      name="validate_allocation"
+                     confirm="Are you sure you want to validate this personal equipment allocation?"
                      class="oe_highlight"
                      states="accepted"
                      groups="hr.group_hr_user"/>
@@ -21,6 +22,7 @@
                      type="object"
                      string="Expire"
                      name="expire_allocation"
+                     confirm="Are you sure you want to expire this personal equipment allocation?"
                      states="valid"
                      groups="hr.group_hr_user"
                      />
@@ -35,7 +37,7 @@
                         <field name="product_uom_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     </group>
                     <group>
-                        <field name="material_request_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="equipment_request_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     </group>
                     <group name="date">
                         <field name="start_date" attrs="{'readonly': [('state', 'not in', ('draft','accepted'))]}"/>
@@ -50,11 +52,11 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="hr_employee_material_tree_view">
-        <field name="name">hr.employee.material.tree (in hr_employee_material)</field>
-        <field name="model">hr.employee.material</field>
+    <record model="ir.ui.view" id="hr_personal_equipment_tree_view">
+        <field name="name">hr.personal.equipment.tree (in hr_personal_equipment)</field>
+        <field name="model">hr.personal.equipment</field>
         <field name="arch" type="xml">
-            <tree string="Employee Materials" create="0">
+            <tree string="Employee Personal Equipments" create="0">
                 <field name="name" invisible="1"/>
                 <field name="product_id"/>
                 <field name="employee_id" groups="hr.group_hr_user"/>
@@ -62,14 +64,14 @@
                 <field name="product_uom_id"/>
                 <field name="start_date"/>
                 <field name="state"/>
-                <field name="material_request_id" invisible="1" />
+                <field name="equipment_request_id" invisible="1" />
             </tree>
         </field>
     </record>
 
-    <record model="ir.ui.view" id="hr_employee_material_search_view">
-        <field name="name">hr.employee.material.search (in hr_employee_material)</field>
-        <field name="model">hr.employee.material</field>
+    <record model="ir.ui.view" id="hr_personal_equipment_search_view">
+        <field name="name">hr.personal.equipment.search (in hr_personal_equipment)</field>
+        <field name="model">hr.personal.equipment</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -90,24 +92,24 @@
     </record>
 
 
-    <record model="ir.actions.act_window" id="hr_employee_material_act_window">
+    <record model="ir.actions.act_window" id="hr_personal_equipment_act_window">
         <field name="name">Allocations</field>
-        <field name="res_model">hr.employee.material</field>
+        <field name="res_model">hr.personal.equipment</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
-        <field name="context">{'search_default_accepted_state':1}</field>
+        <field name="context">{'search_default_valid_state':1}</field>
     </record>
 
-    <record model="ir.ui.menu" id="hr_employee_material_menu">
-        <field name="name">Material</field>
+    <record model="ir.ui.menu" id="hr_personal_equipment_menu">
+        <field name="name">Personal Equipment</field>
         <field name="parent_id" ref="hr.menu_hr_root"/>
         <field name="sequence" eval="16"/>
     </record>
 
-     <record model="ir.ui.menu" id="hr_employee_material_allocations_menu">
+     <record model="ir.ui.menu" id="hr_personal_equipment_allocations_menu">
         <field name="name">Allocations</field>
-        <field name="parent_id" ref="hr_employee_material_menu"/>
-        <field name="action" ref="hr_employee_material_act_window"/>
+        <field name="parent_id" ref="hr_personal_equipment_menu"/>
+        <field name="action" ref="hr_personal_equipment_act_window"/>
         <field name="sequence" eval="16"/>
     </record>
 

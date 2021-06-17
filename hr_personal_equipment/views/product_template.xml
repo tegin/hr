@@ -4,18 +4,19 @@
 
 <odoo>
     <record model="ir.ui.view" id="product_template_form_view">
-        <field name="name">product.template.form (in hr_employee_material)</field>
+        <field name="name">product.template.form (in hr_personal_equipment)</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
              <xpath expr="//field[@name='purchase_ok']/.." position="after">
                  <div>
-                     <field name="is_employee_material"/>
-                     <label for="is_employee_material"/>
+                     <field name="is_personal_equipment"/>
+                     <label for="is_personal_equipment"/>
                  </div>
             </xpath>
+            <!-- This page serves as a hook if additional fields are needed> -->
             <xpath expr="//page[@name='inventory']" position="after">
-                <page name="employee_material" string="Employee Material" attrs="{'invisible': [('is_employee_material', '=', False)]}">
+                <page name="personal_equipment" string="Employee Personal Equipment" attrs="{'invisible': [('is_personal_equipment', '=', False)]}">
                 </page>
             </xpath>
         </field>
