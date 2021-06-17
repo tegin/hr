@@ -8,5 +8,5 @@ class ProductTemplate(models.Model):
 
     _inherit = 'product.template'
 
-    is_employee_material = fields.Boolean(default=False)
+    is_personal_equipment = fields.Boolean(default=False, string="Is Employee Personal Equipment")
 
