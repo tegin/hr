@@ -2,9 +2,9 @@
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-==========================
+=============================
 Hr Personal Equipment Stock
-==========================
+=============================
 
 This addon allows to integrate hr_personal_equipment with stock
 
