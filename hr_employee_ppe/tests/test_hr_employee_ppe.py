@@ -1,11 +1,12 @@
 # Copyright 2020 - TODAY, Marcel Savegnago - Escodoo
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from odoo.tests import TransactionCase
 
 from odoo.exceptions import ValidationError
+from odoo.addons.base.models.ir_cron import _intervalTypes
 
 
 class TestHREmployeePPE(TransactionCase):
@@ -80,11 +81,27 @@ class TestHREmployeePPE(TransactionCase):
         self.assertEqual(self.hr_employee_ppe_expirable.indications,
                          self.product_employee_ppe_expirable.indications)
 
-    def test_validate_allocation(self):
+    def test_accept_allocation(self):
         self.assertFalse(self.hr_employee_ppe_expirable.issued_by)
         self.personal_equipment_request.sudo(self.user).accept_request()
         self.assertTrue(self.hr_employee_ppe_expirable.issued_by)
         self.assertEqual(self.hr_employee_ppe_expirable.issued_by, self.user)
+
+    def test_validate_allocation_with_start_date(self):
+        self.assertFalse(self.hr_employee_ppe_expirable.end_date)
+        self.hr_employee_ppe_expirable.start_date = "2020-01-01"
+        self.hr_employee_ppe_expirable.validate_allocation()
+        self.assertTrue(self.hr_employee_ppe_expirable.end_date)
+        self.assertEqual(str(self.hr_employee_ppe_expirable.end_date), "2020-01-04")
+
+    def test_validate_allocation_without_start_date(self):
+        self.assertFalse(self.hr_employee_ppe_expirable.end_date)
+        self.assertFalse(self.hr_employee_ppe_expirable.start_date)
+        self.hr_employee_ppe_expirable.validate_allocation()
+        self.assertEqual(self.hr_employee_ppe_expirable.end_date, date.today()
+                         + _intervalTypes[
+                self.product_employee_ppe_expirable.ppe_interval_type]
+                         (self.product_employee_ppe_expirable.ppe_duration))
 
     def test_cron_ppe_expiry_verification_expired_product(self):
         self.hr_employee_ppe_expirable.start_date = "2020-01-01"

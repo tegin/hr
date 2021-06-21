@@ -40,8 +40,12 @@ class HrPersonalEquipment(models.Model):
 
     def _validate_allocation_vals(self):
         res = super()._validate_allocation_vals()
+        if self.start_date:
+            start_date = self.start_date
+        else:
+            start_date = date.today()
         if not self.end_date and self.product_id.expirable_ppe:
-            res["end_date"] = fields.Date.today() + _intervalTypes[
+            res["end_date"] = start_date + _intervalTypes[
                 self.product_id.ppe_interval_type](self.product_id.ppe_duration)
         return res
 
