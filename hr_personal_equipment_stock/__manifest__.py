@@ -20,4 +20,5 @@
     ],
     'demo': [
     ],
+    'auto_install': True,
 }

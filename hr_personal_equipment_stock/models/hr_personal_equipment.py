@@ -17,8 +17,13 @@ class HrPersonalEquipment(models.Model):
              "procurement rules will be grouped into one big picking.",
         related='equipment_request_id.procurement_group_id'
     )
-    qty_delivered = fields.Float('Delivered Quantity', copy=False, compute='_compute_qty_delivered', compute_sudo=True, store=True)
-    move_ids = fields.One2many('stock.move', 'personal_equipment_id', string='Stock Moves')
+    qty_delivered = fields.Float('Delivered Quantity',
+                                 copy=False,
+                                 compute='_compute_qty_delivered',
+                                 compute_sudo=True, store=True)
+    move_ids = fields.One2many('stock.move',
+                               'personal_equipment_id',
+                               string='Stock Moves')
     skip_procurement = fields.Boolean(compute='_compute_skip_procurement')
 
     @api.depends("state", "product_id", "product_id.type")
@@ -26,12 +31,15 @@ class HrPersonalEquipment(models.Model):
         for record in self:
             record.skip_procurement = record._skip_procurement()
 
-    @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom')
+    @api.depends('move_ids.state', 'move_ids.scrapped',
+                 'move_ids.product_uom_qty', 'move_ids.product_uom')
     def _compute_qty_delivered(self):
         for line in self:
             qty = 0.0
-            for move in line.move_ids.filtered(lambda r: r.state == 'done' and line.product_id == r.product_id):
-                qty += move.product_uom._compute_quantity(move.product_uom_qty, line.product_uom_id)
+            for move in line.move_ids.\
+                    filtered(lambda r: r.state == 'done' and line.product_id == r.product_id):
+                qty += move.product_uom._compute_quantity(move.product_uom_qty,
+                                                          line.product_uom_id)
             line.qty_delivered = qty
 
     def _skip_procurement(self):
@@ -61,7 +69,7 @@ class HrPersonalEquipment(models.Model):
         """
         errors = []
         for allocation in self:
-            if allocation._skip_procurement():
+            if allocation.skip_procurement:
                 continue
 
             values = allocation._prepare_procurement_values(group_id=allocation.procurement_group_id)
