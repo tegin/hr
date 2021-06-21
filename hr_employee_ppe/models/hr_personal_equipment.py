@@ -67,4 +67,3 @@ class HrPersonalEquipment(models.Model):
                     raise ValidationError(
                         _("End date cannot occur earlier than start date.")
                     )
-
