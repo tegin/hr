@@ -7,7 +7,6 @@ from odoo.tests import TransactionCase
 
 from odoo.exceptions import ValidationError
 
-from odoo.tests.common import Form
 
 class TestHREmployeePPE(TransactionCase):
     def setUp(self):
@@ -63,7 +62,8 @@ class TestHREmployeePPE(TransactionCase):
             }
         ]
 
-        self.personal_equipment_request = self.env['hr.personal.equipment.request'].sudo(self.user.id).create(
+        self.personal_equipment_request = self.env['hr.personal.equipment.request'].\
+            sudo(self.user.id).create(
             {
                 'name': 'Personal Equipment Request Test',
                 'line_ids': [(0, 0, line) for line in lines],
@@ -77,7 +77,8 @@ class TestHREmployeePPE(TransactionCase):
         self.hr_employee_ppe_expirable._compute_fields()
         self.assertTrue(self.hr_employee_ppe_expirable.is_ppe)
         self.assertTrue(self.hr_employee_ppe_expirable.expire_ppe)
-        self.assertEqual(self.hr_employee_ppe_expirable.indications, self.product_employee_ppe_expirable.indications)
+        self.assertEqual(self.hr_employee_ppe_expirable.indications,
+                         self.product_employee_ppe_expirable.indications)
 
     def test_validate_allocation(self):
         self.assertFalse(self.hr_employee_ppe_expirable.issued_by)
@@ -129,7 +130,8 @@ class TestHREmployeePPE(TransactionCase):
                 'quantity': 3
             }]
 
-        personal_equipment_request = self.env['hr.personal.equipment.request'].sudo(self.user.id).create(
+        personal_equipment_request = self.env['hr.personal.equipment.request'].\
+            sudo(self.user.id).create(
             {
                 'name': 'Personal Equipment Request Test',
                 'line_ids': [(0, 0, line) for line in lines],
