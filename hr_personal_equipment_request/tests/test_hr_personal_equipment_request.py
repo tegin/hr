@@ -55,7 +55,7 @@ class TestHRPersonalEquipmentRequest(TransactionCase):
 
         self.personal_equipment_request = (
             self.env["hr.personal.equipment.request"]
-            .sudo(self.user.id)
+            .with_user(self.user.id)
             .create(
                 {
                     "name": "Personal Equipment Request Test",
@@ -68,7 +68,7 @@ class TestHRPersonalEquipmentRequest(TransactionCase):
         self.assertTrue(self.personal_equipment_request.name)
         self.assertEqual(
             self.personal_equipment_request.name,
-            "Personal Equipment Request by Test User",
+            "Personal Equipment Request by Employee Test",
         )
 
     def test_accept_request(self):
@@ -88,7 +88,7 @@ class TestHRPersonalEquipmentRequest(TransactionCase):
     def test_allocation_compute_name(self):
         self.assertEqual(
             self.personal_equipment_request.line_ids[0].name,
-            "Product Test Personal Equipment 1 to Test User",
+            "Product Test Personal Equipment 1 to Employee Test",
         )
 
     def test_onchange_uom_id(self):

@@ -30,7 +30,7 @@ class HrPersonalEquipment(models.Model):
             ("cancelled", "Cancelled"),
         ],
         default="draft",
-        track_visibility=True,
+        tracking=True,
     )
     start_date = fields.Date()
     equipment_request_id = fields.Many2one(
@@ -56,6 +56,8 @@ class HrPersonalEquipment(models.Model):
         for rec in self:
             if rec.product_id.name and rec.employee_id.name:
                 rec.name = "{} to {}".format(rec.product_id.name, rec.employee_id.name)
+            else:
+                rec.name = False
 
     def _validate_allocation_vals(self):
         return {
