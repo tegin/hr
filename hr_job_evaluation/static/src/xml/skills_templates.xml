@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+
+   <t t-name="hr_evaluation_skill_data_row">
+    <tr class="o_data_row" t-att-data-id="id">
+        <td class="o_data_cell o_skill_cell pr-3">
+            <i class="fa fa-check" t-if="data.passed" />
+            <i class="fa fa-times" t-if="!data.passed" />
+        </td>
+        <td class="o_data_cell o_skill_cell w-100">
+            <t t-esc="data.skill_id.data.display_name" />
+        </td>
+        <td class="o_data_cell o_skill_cell pr-3">
+            <t
+                    t-esc="data.skill_level_id.data.display_name"
+                    t-if="data.skill_level_id.data"
+                />
+        </td>
+    </tr>
+</t>
+<t t-name="hr_evaluation_skill_group_add_item">
+    <t t-set="empty" t-value="Object.keys(context).length == 2" />
+
+    <div
+            t-attf-class="o_field_x2many_list_row_add #{empty? 'd-block w-100' : 'd-inline pull-right'}"
+        >
+        <div
+                t-if="empty"
+                class="o_resume_empty_helper o_horizontal_separator text-muted my-0"
+            >
+            <em>Resumé empty</em>
+        </div>
+    </div>
+</t>
+
+</templates>

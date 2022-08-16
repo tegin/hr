@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 CreuBlanca
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="hr_job_evaluation_form_view">
+        <field name="name">hr.job.evaluation.form (in hr_job_evaluation)</field>
+        <field name="model">hr.job.evaluation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="start_evaluation"
+                        string="Start"
+                        states="draft"
+                        type="object"
+                    />
+                    <button
+                        name="pass_evaluation"
+                        string="Pass"
+                        states="evaluation"
+                        type="object"
+                        class="btn-success"
+                    />
+                    <button
+                        name="reject_evaluation"
+                        string="Reject"
+                        states="evaluation"
+                        type="object"
+                        class="btn-danger"
+                    />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <!-- TODO -->
+                    <group>
+                        <field name="employee_id" />
+                        <field name="job_id" />
+                    </group>
+                    <notebook>
+                        <page name="skills" string="Skills">
+                            <div
+                                class="o_hr_skills_group o_group_skills d-flex flex-column"
+                            >
+                                <field
+                                    mode="tree"
+                                    nolabel="1"
+                                    name="skill_ids"
+                                    widget="hr_evaluation_skills"
+                                >
+                                    <tree>
+                                        <field name="skill_type_id" invisible="1" />
+                                        <field name="skill_id" />
+                                        <field name="skill_level_id" />
+                                        <field
+                                            name="level_progress"
+                                            widget="progressbar"
+                                        />
+                                        <field name="passed" />
+                                    </tree>
+                                </field>
+                            </div>
+                        </page>
+                        <page name="evaluation" string="Evaluation">
+                            <field name="evaluation" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field
+                        name="message_follower_ids"
+                        widget="mail_followers"
+                        groups="base.group_user"
+                    />
+		            <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_job_evaluation_skill_form_view">
+        <field name="name">hr.job.evaluation.skill.form (in hr_job_evaluation)</field>
+        <field name="model">hr.job.evaluation.skill</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="skill_type_id" />
+                            <field
+                                name="skill_id"
+                                domain="[('skill_type_id', '=', skill_type_id)]"
+                                options="{'no_create_edit':True}"
+                            />
+                        </group>
+                        <group>
+                            <field
+                                name="skill_level_id"
+                                domain="[('skill_type_id', '=', skill_type_id)]"
+                            />
+                            <field name="level_progress" widget="progressbar" />
+                            <field name="expected_level_id" />
+                            <field name="passed" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_job_evaluation_search_view">
+        <field name="name">hr.job.evaluation.search (in hr_job_evaluation)</field>
+        <field name="model">hr.job.evaluation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id" />
+                <field name="job_id" />
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_job_evaluation_tree_view">
+        <field name="name">hr.job.evaluation.tree (in hr_job_evaluation)</field>
+        <field name="model">hr.job.evaluation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id" />
+                <field name="job_id" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="hr_job_evaluation_act_window">
+        <field name="name">HR Job Evaluation</field> <!-- TODO -->
+        <field name="res_model">hr.job.evaluation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_job_evaluation_menu">
+        <field name="name">Hr Job Evaluation</field>
+        <field name="parent_id" ref="hr.menu_hr_root" /> <!-- TODO -->
+        <field name="action" ref="hr_job_evaluation_act_window" />
+        <field
+            name="groups_id"
+            eval="[(4, ref('hr.group_hr_manager')),(4, ref('hr.group_hr_user'))]"
+        />
+        <field name="sequence" eval="50" /> <!-- TODO -->
+    </record>
+
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_job_evaluation,access_hr_job_evaluation,model_hr_job_evaluation,hr.group_hr_user,1,1,1,0
+access_hr_job_evaluation_skill,access_hr_job_evaluation_skill,model_hr_job_evaluation_skill,hr.group_hr_user,1,1,1,0
+access_hr_job_skill,access_hr_job_skill,model_hr_job_skill,hr.group_hr_user,1,1,1,1
