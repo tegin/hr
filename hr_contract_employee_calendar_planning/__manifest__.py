@@ -10,5 +10,5 @@
     "auto_install": True,
     "depends": ["hr_contract", "hr_employee_calendar_planning"],
     "data": ["views/contract.xml"],
-    "post_init_hook": "post_init_hook",
+    # "post_init_hook": "post_init_hook",
 }
